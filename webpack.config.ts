@@ -4,6 +4,40 @@ import pulseConfig from "./pulse.config";
 import { Configuration as WebpackConfig } from "webpack";
 import { Configuration as DevServerConfig } from "webpack-dev-server";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import { networkInterfaces } from "os";
+
+function getLocalNetworkIP() {
+  const interfaces = networkInterfaces();
+  for (const iface of Object.values(interfaces)) {
+    if (!iface) continue;
+    for (const config of iface) {
+      if (config.family === "IPv4" && !config.internal) {
+        return config.address; // Returns the first non-internal IPv4 address
+      }
+    }
+  }
+  return "localhost"; // Fallback
+}
+
+const origin = getLocalNetworkIP();
+
+const previewStartupMessage = `
+🎉 Your Pulse extension preview \x1b[1m${pulseConfig.displayName}\x1b[0m is LIVE! 
+
+⚡️ Local: http://localhost:3030
+⚡️ Network: http://${origin}:3030
+
+✨ Try it out in your browser and let the magic happen! 🚀
+`;
+
+const devStartupMessage = `
+🎉 Your Pulse extension \x1b[1m${pulseConfig.displayName}\x1b[0m is LIVE! 
+
+⚡️ Local: http://localhost:3001/${pulseConfig.id}/${pulseConfig.version}/
+⚡️ Network: http://${origin}:3001/${pulseConfig.id}/${pulseConfig.version}/
+
+✨ Try it out in the Pulse Editor and let the magic happen! 🚀
+`;
 
 const previewConfig: WebpackConfig & DevServerConfig = {
   entry: {
@@ -19,6 +53,31 @@ const previewConfig: WebpackConfig & DevServerConfig = {
     new MiniCssExtractPlugin({
       filename: "globals.css",
     }),
+    {
+      apply: (compiler) => {
+        let isFirstRun = true;
+
+        // Before build starts
+        compiler.hooks.watchRun.tap("ReloadMessagePlugin", () => {
+          if (!isFirstRun) {
+            console.log("🔄 reloading app...");
+          } else {
+            console.log("🔄 building app...");
+          }
+        });
+
+        // After build finishes
+        compiler.hooks.done.tap("ReloadMessagePlugin", () => {
+          if (isFirstRun) {
+            console.log("✅ app is ready");
+            console.log(previewStartupMessage);
+            isFirstRun = false;
+          } else {
+            console.log("✅ reload finished");
+          }
+        });
+      },
+    },
   ],
   module: {
     rules: [
@@ -40,6 +99,16 @@ const previewConfig: WebpackConfig & DevServerConfig = {
     hot: true, // Enable Hot Module Replacement
   },
   mode: "development",
+  stats: {
+    all: false,
+    errors: true,
+    warnings: true,
+    logging: "warn",
+    colors: true,
+  },
+  infrastructureLogging: {
+    level: "warn",
+  },
 };
 
 const mfConfig: WebpackConfig & DevServerConfig = {
@@ -80,6 +149,31 @@ const mfConfig: WebpackConfig & DevServerConfig = {
         },
       },
     }),
+    {
+      apply: (compiler) => {
+        let isFirstRun = true;
+
+        // Before build starts
+        compiler.hooks.watchRun.tap("ReloadMessagePlugin", () => {
+          if (!isFirstRun) {
+            console.log("🔄 reloading app...");
+          } else {
+            console.log("🔄 building app...");
+          }
+        });
+
+        // After build finishes
+        compiler.hooks.done.tap("ReloadMessagePlugin", () => {
+          if (isFirstRun) {
+            console.log("✅ app is ready");
+            console.log(devStartupMessage);
+            isFirstRun = false;
+          } else {
+            console.log("✅ reload finished");
+          }
+        });
+      },
+    },
   ],
   module: {
     rules: [
@@ -95,6 +189,16 @@ const mfConfig: WebpackConfig & DevServerConfig = {
         ],
       },
     ],
+  },
+  stats: {
+    all: false,
+    errors: true,
+    warnings: true,
+    logging: "warn",
+    colors: true,
+  },
+  infrastructureLogging: {
+    level: "warn",
   },
 };
 

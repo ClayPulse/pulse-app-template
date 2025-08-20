@@ -10,7 +10,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "dev": "npm run clean && cross-env NODE_OPTIONS='--import=tsx' webpack --mode development && tsx express.ts",
+    "dev": "npm run clean && cross-env NODE_OPTIONS='--import=tsx' webpack --mode development --watch && tsx express.ts",
     "build": "npm run clean && cross-env NODE_OPTIONS='--import=tsx' webpack --mode production",
     "preview": "cross-env NODE_OPTIONS='--import=tsx' PREVIEW=true webpack serve --mode development",
     "clean": "rimraf dist"

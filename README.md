@@ -15,8 +15,8 @@ Run the following to start a dev server locally.
 ```
 npm run dev
 ```
-This will host your extension at http://localhost:3001 (or you can customize the server host in `webpack.config.ts`). Then in Pulse Editor, go to settings and fill in your extension dev server's information to install you new extension. You will need the following:
-- dev server: e.g. http://localhost:3001
+This will host your extension at http://localhost:3030 (or you can customize the server host in `webpack.config.ts`). Then in Pulse Editor, go to settings and fill in your extension dev server's information to install you new extension. You will need the following:
+- dev server: e.g. http://localhost:3030
 - extension id: your extension's ID specified in `package.json` 
 - version: your extension's version specified in `package.json`
 
