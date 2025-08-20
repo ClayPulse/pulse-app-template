@@ -16,7 +16,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@module-federation/enhanced": "^0.17.1",
+    "@module-federation/enhanced": "^0.18.3",
     "@pulse-editor/react-api": "^0.1.1-alpha.24",
     "@pulse-editor/shared-utils": "^0.1.1-alpha.24",
     "cors": "^2.8.5",
