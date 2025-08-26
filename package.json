@@ -10,13 +10,15 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "dev": "npm run clean && cross-env NODE_OPTIONS='--import=tsx' webpack --mode development --watch && tsx express.ts",
+    "dev": "npm run clean && cross-env NODE_OPTIONS='--import=tsx' concurrently --prefix none \"webpack --mode development --watch\" \"tsx watch --clear-screen=false express.ts\"",
     "build": "npm run clean && cross-env NODE_OPTIONS='--import=tsx' webpack --mode production",
+    "start": "cross-env NODE_OPTIONS='--import=tsx' tsx express.ts",
     "preview": "cross-env NODE_OPTIONS='--import=tsx' PREVIEW=true webpack serve --mode development",
     "clean": "rimraf dist"
   },
   "dependencies": {
     "@module-federation/enhanced": "^0.18.3",
+    "@module-federation/node": "^2.7.14",
     "@pulse-editor/react-api": "^0.1.1-alpha.24",
     "@pulse-editor/shared-utils": "^0.1.1-alpha.24",
     "cors": "^2.8.5",
@@ -29,6 +31,7 @@
     "@tailwindcss/postcss": "^4.1.12",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
+    "concurrently": "^9.2.1",
     "cross-env": "^10.0.0",
     "css-loader": "^7.1.2",
     "eslint": "^9.33.0",
