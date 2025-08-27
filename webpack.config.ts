@@ -121,7 +121,7 @@ const previewHostConfig: WebpackConfig = {
     publicPath: "auto",
     library: { type: "commonjs-module" },
     path: path.resolve(__dirname, "dist/preview/backend"),
-    filename: "index.js",
+    filename: "index.cjs",
   },
   resolve: {
     extensions: [".ts", ".js"],
