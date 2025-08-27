@@ -11,7 +11,7 @@
     "include": [
         "src/**/*",
         "pulse.config.ts",
-        "preview/index.tsx",
+        "preview/frontend/index.tsx",
     ],
     "exclude": [
         "node_modules",

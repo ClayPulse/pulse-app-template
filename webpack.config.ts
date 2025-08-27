@@ -42,16 +42,19 @@ const devStartupMessage = `
 ✨ Try it out in the Pulse Editor and let the magic happen! 🚀
 `;
 
-const previewConfig: WebpackConfig & DevServerConfig = {
+const previewClientConfig: WebpackConfig & DevServerConfig = {
   entry: {
-    main: "./preview/index.tsx",
+    main: "./preview/frontend/index.tsx",
+  },
+  output: {
+    path: path.resolve(__dirname, "dist/client"),
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./preview/index.html",
+      template: "./preview/frontend/index.html",
     }),
     new MiniCssExtractPlugin({
       filename: "globals.css",
@@ -63,20 +66,20 @@ const previewConfig: WebpackConfig & DevServerConfig = {
         // Before build starts
         compiler.hooks.watchRun.tap("ReloadMessagePlugin", () => {
           if (!isFirstRun) {
-            console.log("[Preview] 🔄 Reloading app...");
+            console.log("[client-preview] 🔄 Reloading app...");
           } else {
-            console.log("[Preview] 🔄 Building app...");
+            console.log("[client-preview] 🔄 Building app...");
           }
         });
 
         // After build finishes
         compiler.hooks.done.tap("ReloadMessagePlugin", () => {
           if (isFirstRun) {
-            console.log("[Preview] ✅ Successfully built preview.");
+            console.log("[client-preview] ✅ Successfully built preview.");
             console.log(previewStartupMessage);
             isFirstRun = false;
           } else {
-            console.log("[Preview] ✅ Reload finished");
+            console.log("[client-preview] ✅ Reload finished");
           }
         });
       },
@@ -97,26 +100,59 @@ const previewConfig: WebpackConfig & DevServerConfig = {
       },
     ],
   },
-  devServer: {
-    host: "0.0.0.0",
-    allowedHosts: "all",
-    port: 3030,
-    hot: true, // Enable Hot Module Replacement
-    setupMiddlewares: (middlewares, devServer) => {
-      if (!devServer) {
-        throw new Error("webpack-dev-server is not defined");
-      }
-
-      devServer.app?.use((req, res, next) => {
-        if (req.headers.accept && req.headers.accept.includes("text/html")) {
-          console.log(`✅ [${req.method}] ${req.url}`);
-        }
-        next();
-      });
-
-      return middlewares;
-    },
+  mode: "development",
+  stats: {
+    all: false,
+    errors: true,
+    warnings: true,
+    logging: "warn",
+    colors: true,
   },
+  infrastructureLogging: {
+    level: "warn",
+  },
+};
+
+/* This is temporary code to be moved to a different package in the future. */
+const previewHostConfig: WebpackConfig = {
+  entry: "./preview/backend/index.ts",
+  target: "async-node",
+  output: {
+    publicPath: "auto",
+    library: { type: "commonjs-module" },
+    path: path.resolve(__dirname, "dist/preview/backend"),
+    filename: "index.js",
+  },
+  resolve: {
+    extensions: [".ts", ".js"],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: [
+          {
+            loader: "ts-loader",
+            options: {
+              transpileOnly: false, // Enables type-checking and .d.ts file emission
+            },
+          },
+        ],
+        exclude: /node_modules/,
+      },
+    ],
+  },
+  plugins: [
+    new NodeFederationPlugin(
+      {
+        remoteType: "script",
+        name: "preview_host",
+        useRuntimePlugin: true,
+        exposes: {},
+      },
+      {}
+    ),
+  ],
   mode: "development",
   stats: {
     all: false,
@@ -301,34 +337,39 @@ const mfServerConfig: WebpackConfig = {
     ),
     {
       apply: (compiler) => {
+        function getServerName() {
+          return process.env.PREVIEW === "true"
+            ? "[server-preview]"
+            : "[server]";
+        }
         if (compiler.options.mode === "development") {
           let isFirstRun = true;
 
           // Before build starts
           compiler.hooks.watchRun.tap("ReloadMessagePlugin", () => {
             if (!isFirstRun) {
-              console.log("[server] 🔄 Reloading app...");
+              console.log(`${getServerName()} 🔄 Reloading app...`);
             } else {
-              console.log("[server] 🔄 Building app...");
+              console.log(`${getServerName()} 🔄 Building app...`);
             }
           });
 
           // After build finishes
           compiler.hooks.done.tap("ReloadMessagePlugin", () => {
             if (isFirstRun) {
-              console.log("[server] ✅ Successfully built server.");
+              console.log(`${getServerName()} ✅ Successfully built server.`);
               isFirstRun = false;
             } else {
-              console.log("[server] ✅ Reload finished.");
+              console.log(`${getServerName()} ✅ Reload finished.`);
             }
           });
         } else {
           // Print build success/failed message
           compiler.hooks.done.tap("BuildMessagePlugin", (stats) => {
             if (stats.hasErrors()) {
-              console.log(`[server] ❌ Failed to build server.`);
+              console.log(`${getServerName()} ❌ Failed to build server.`);
             } else {
-              console.log(`[server] ✅ Successfully built server.`);
+              console.log(`${getServerName()} ✅ Successfully built server.`);
             }
           });
         }
@@ -358,7 +399,7 @@ const mfServerConfig: WebpackConfig = {
 
 const config =
   process.env.PREVIEW === "true"
-    ? previewConfig
+    ? [previewClientConfig, previewHostConfig, mfServerConfig]
     : [mfClientConfig, mfServerConfig];
 
 export default config as WebpackConfig[];
