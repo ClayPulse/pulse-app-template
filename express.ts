@@ -16,7 +16,7 @@ dotenv.config({
 const livereloadServer = livereload.createServer();
 livereloadServer.watch("dist");
 livereloadServer.server.once("connection", () => {
-  console.log("🔄 LiveReload connected");
+  console.log("✅ LiveReload connected");
 });
 
 const app = express();
@@ -37,8 +37,8 @@ if (isPreview) {
   /* Preview mode */
   app.use(express.static("dist/client"));
   app.use("/.server-function", express.static("dist/server"));
-  app.all("/server-function/:func", async (req, res) => {
-    const func = req.params.func;
+  app.all(/^\/server-function\/(.*)/, async (req, res) => {
+    const func = req.params[0];
 
     const url = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
 
