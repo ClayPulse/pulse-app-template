@@ -17,7 +17,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@module-federation/enhanced": "^0.18.3",
+    "@module-federation/enhanced": "^0.18.4",
     "@module-federation/node": "^2.7.14",
     "@module-federation/runtime": "^0.18.3",
     "@pulse-editor/react-api": "^0.1.1-alpha.26",
