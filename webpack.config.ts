@@ -319,7 +319,7 @@ function makeNodeFederationPlugin() {
   console.log(`Discovered server functions:
 ${Object.entries(funcs)
   .map(([name, file]) => {
-    return `  - ${name} (from ${file})`;
+    return `  - ${name.slice(2)} (from ${file})`;
   })
   .join("\n")}
 `);
