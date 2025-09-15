@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@module-federation/enhanced": "^0.18.3",
-    "@module-federation/node": "^2.7.14",
+    "@module-federation/node": "^2.7.17",
     "@module-federation/runtime": "^0.18.3",
     "@pulse-editor/react-api": "^0.1.1-alpha.26",
     "@pulse-editor/shared-utils": "^0.1.1-alpha.26",
