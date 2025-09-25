@@ -14,7 +14,10 @@ const config: ExtensionConfig = {
   version: packageJson.version,
   extensionType: ExtensionTypeEnum.FileView,
   fileTypes: ["txt", "json", "py", "cpp", "c", "tsx", "ts", "js", "jsx"],
-  visibility: packageJson["pulse-editor-marketplace"].visibility
+  visibility: packageJson["pulse-editor-marketplace"].visibility,
+  recommendedHeight: 640,
+  recommendedWidth: 360,
+  thumbnail: "assets/thumbnail.png",
 };
 
 export default config;
