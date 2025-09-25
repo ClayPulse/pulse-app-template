@@ -339,7 +339,8 @@ ${Object.entries(funcs)
   );
 }
 
-function compileServerFunctions(compiler) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function compileServerFunctions(compiler: any) {
   // Remove existing entry points
   try {
     fs.rmSync("dist/server", { recursive: true, force: true });
