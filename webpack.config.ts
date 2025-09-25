@@ -256,6 +256,12 @@ const mfClientConfig: WebpackConfig & DevServerConfig = {
               console.log(`[client] ❌ Failed to build client.`);
             } else {
               console.log(`[client] ✅ Successfully built client.`);
+
+              // Write pulse config to dist
+              fs.writeFileSync(
+                path.resolve(__dirname, "dist/client/pulse.config.json"),
+                JSON.stringify(pulseConfig, null, 2)
+              );
             }
           });
         }
