@@ -9,9 +9,10 @@ const config: AppConfig = {
   // Do not use hyphen character '-' in the id. 
   // The id should be the same as the package name in package.json.
   id: packageJson.name,
+  version: packageJson.version,
+  libVersion: packageJson.dependencies["@pulse-editor/shared-utils"],
   displayName: packageJson.displayName,
   description: packageJson.description,
-  version: packageJson.version,
   appType: AppTypeEnum.FileView,
   visibility: packageJson["pulse-editor-marketplace"].visibility,
   recommendedHeight: 640,
