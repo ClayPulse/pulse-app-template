@@ -18,6 +18,7 @@ const config: AppConfig = {
   recommendedHeight: 640,
   recommendedWidth: 360,
   thumbnail: "assets/thumbnail.png",
+  preRegisteredActions: [],
 };
 
 export default config;
