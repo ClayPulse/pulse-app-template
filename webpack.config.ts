@@ -199,20 +199,15 @@ const mfClientConfig: WebpackConfig & DevServerConfig = {
       },
       shared: {
         react: {
-          requiredVersion: "19.1.0",
+          requiredVersion: "19.2.0",
           import: "react", // the "react" package will be used a provided and fallback module
           shareKey: "react", // under this name the shared module will be placed in the share scope
           shareScope: "default", // share scope with this name will be used
           singleton: true, // only a single version of the shared module is allowed
         },
         "react-dom": {
-          requiredVersion: "19.1.0",
+          requiredVersion: "19.2.0",
           singleton: true, // only a single version of the shared module is allowed
-        },
-        // Share Workbox configuration as a module
-        "workbox-webpack-plugin": {
-          singleton: true,
-          requiredVersion: "^7.3.0",
         },
       },
     }),
@@ -478,6 +473,10 @@ const mfServerConfig: WebpackConfig = {
 const config =
   process.env.PREVIEW === "true"
     ? [previewClientConfig, previewHostConfig, mfServerConfig]
+    : process.env.BUILD_TARGET === "server"
+    ? [mfServerConfig]
+    : process.env.BUILD_TARGET === "client"
+    ? [mfClientConfig]
     : [mfClientConfig, mfServerConfig];
 
 export default config as WebpackConfig[];
