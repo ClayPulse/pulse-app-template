@@ -5,9 +5,6 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "pulse-editor-marketplace": {
-    "visibility": "unlisted"
-  },
   "scripts": {
     "lint": "eslint .",
     "dev": "npm run clean && cross-env NODE_OPTIONS='--import=tsx' NODE_ENV=development concurrently --prefix none \"webpack --mode development --watch\" \"tsx watch --clear-screen=false express.ts\"",
