@@ -50,7 +50,12 @@ app.use((req, res, next) => {
   return next();
 });
 
-app.use("/.server-function", express.static("dist/server"));
+// Serve backend
+app.use(
+  `/${pulseConfig.id}/${pulseConfig.version}/server`,
+  express.static("dist/server")
+);
+// Catch backend function calls
 app.all(/^\/server-function\/(.*)/, async (req, res) => {
   const func = req.params[0];
 
