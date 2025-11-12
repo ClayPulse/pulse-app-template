@@ -50,38 +50,45 @@ app.use((req, res, next) => {
   return next();
 });
 
+app.use("/.server-function", express.static("dist/server"));
+app.all(/^\/server-function\/(.*)/, async (req, res) => {
+  const func = req.params[0];
+
+  const url = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
+
+  // Convert Express req -> Fetch Request
+  const request = new Request(url, {
+    method: req.method,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    headers: req.headers as any,
+    body: ["GET", "HEAD"].includes(req.method)
+      ? null
+      : JSON.stringify(req.body),
+  });
+
+  const { loadAndCall } = await import("./preview/backend/load-remote.cjs");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const response = await loadAndCall(
+    func,
+    request,
+    pulseConfig.id,
+    "http://localhost:3030",
+    pulseConfig.version
+  );
+
+  // If loadAndCall returns a Response (Fetch API Response)
+  if (response instanceof Response) {
+    res.status(response.status);
+    response.headers.forEach((v, k) => res.setHeader(k, v));
+    res.send(await response.text());
+  } else {
+    res.json(response);
+  }
+});
+
 if (isPreview) {
   /* Preview mode */
   app.use(express.static("dist/client"));
-  app.use("/.server-function", express.static("dist/server"));
-  app.all(/^\/server-function\/(.*)/, async (req, res) => {
-    const func = req.params[0];
-
-    const url = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
-
-    // Convert Express req -> Fetch Request
-    const request = new Request(url, {
-      method: req.method,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      headers: req.headers as any,
-      body: ["GET", "HEAD"].includes(req.method)
-        ? null
-        : JSON.stringify(req.body),
-    });
-
-    const { loadAndCall } = await import("./dist/preview/backend/index.cjs");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response = await loadAndCall(func, request);
-
-    // If loadAndCall returns a Response (Fetch API Response)
-    if (response instanceof Response) {
-      res.status(response.status);
-      response.headers.forEach((v, k) => res.setHeader(k, v));
-      res.send(await response.text());
-    } else {
-      res.json(response);
-    }
-  });
 
   app.listen(3030, "0.0.0.0");
 } else if (isDev) {

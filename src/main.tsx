@@ -5,6 +5,8 @@ import { useLoading } from "@pulse-editor/react-api";
 export default function Main() {
   const [count, setCount] = useState<number>(0);
   const { isReady, toggleLoading } = useLoading();
+  const [inputValue, setInputValue] = useState<string>("");
+  const [apiResult, setApiResult] = useState<string>("");
 
   useEffect(() => {
     if (isReady) {
@@ -38,10 +40,35 @@ export default function Main() {
           className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-sm"
           onClick={() => setCount(count + 1)}
         >
-          Click me
+          Click me to increase count
         </button>
       </div>
       <p className="text-blue-400">{count}</p>
+
+      <div>
+        <input
+          className="border-2 border-gray-300 rounded-sm p-2"
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+        />
+        <button
+          className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-sm"
+          onClick={() => {
+            fetch("/server-function/echo", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ message: inputValue }),
+            }).then(async (response) => {
+              const data = await response.json();
+              setApiResult(data.message);
+            });
+          }}
+        >
+          Click me to call server function that echoes a message
+        </button>
+        <p className="text-blue-400">{apiResult}</p>
+      </div>
     </div>
   );
 }

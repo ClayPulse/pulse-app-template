@@ -30,6 +30,7 @@
     "@module-federation/node": "2.7.17",
     "@module-federation/runtime": "0.19.1",
     "@tailwindcss/postcss": "^4.1.14",
+    "@types/cors": "^2.8.19",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
     "concurrently": "^9.2.1",
