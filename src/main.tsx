@@ -46,12 +46,14 @@ export default function Main() {
       <p className="text-blue-400">{count}</p>
 
       <div>
-        <input
-          className="border-2 border-gray-300 rounded-sm p-2"
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-        />
+        <div>
+          <input
+            className="border-2 border-gray-300 rounded-sm p-2"
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
+        </div>
         <button
           className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-sm"
           onClick={() => {
@@ -65,7 +67,7 @@ export default function Main() {
             });
           }}
         >
-          Click me to call server function that echoes a message
+          Enter text and click me to call server function which echoes a message
         </button>
         <p className="text-blue-400">{apiResult}</p>
       </div>
