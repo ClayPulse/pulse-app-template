@@ -265,10 +265,6 @@ const mfClientConfig: WebpackConfig & DevServerConfig = {
               path.resolve(__dirname, "dist/client/pulse.config.json"),
               JSON.stringify(pulseConfig, null, 2)
             );
-            fs.writeFileSync(
-              path.resolve(__dirname, "dist/server/pulse.config.json"),
-              JSON.stringify(pulseConfig, null, 2)
-            );
           });
         } else {
           // Print build success/failed message
@@ -281,10 +277,6 @@ const mfClientConfig: WebpackConfig & DevServerConfig = {
               // Write pulse config to dist
               fs.writeFileSync(
                 path.resolve(__dirname, "dist/client/pulse.config.json"),
-                JSON.stringify(pulseConfig, null, 2)
-              );
-              fs.writeFileSync(
-                path.resolve(__dirname, "dist/server/pulse.config.json"),
                 JSON.stringify(pulseConfig, null, 2)
               );
             }
