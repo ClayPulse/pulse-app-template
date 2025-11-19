@@ -23,7 +23,7 @@
     "@pulse-editor/shared-utils": "^0.1.1-beta.59",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "html-webpack-plugin": "^5.6.4",
+    "html-webpack-plugin": "^5.6.5",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
