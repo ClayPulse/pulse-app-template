@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ModuleFederationPlugin } from "@module-federation/enhanced/webpack";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import pulseConfig from "./pulse.config";
@@ -10,6 +11,7 @@ import path from "path";
 import { globSync } from "glob";
 import fs from "fs";
 import CopyWebpackPlugin from "copy-webpack-plugin";
+import ts from "typescript";
 
 function getLocalNetworkIP() {
   const interfaces = networkInterfaces();
@@ -44,6 +46,151 @@ const devStartupMessage = `
 ✨ Try it out in the Pulse Editor and let the magic happen! 🚀
 `;
 
+function getServerName() {
+  return process.env.PREVIEW === "true" ? "[server-preview]" : "[server]";
+}
+
+// #region Node Federation Plugin for Server Functions
+function makeNodeFederationPlugin() {
+  function discoverServerFunctions() {
+    // Get all .ts files under src/server-function and read use default exports as entry points
+    const files = globSync("./src/server-function/**/*.ts");
+    const entryPoints = files
+      .map((file) => file.replaceAll("\\", "/"))
+      .map((file) => {
+        return {
+          ["./" +
+          file.replace("src/server-function/", "").replace(/\.ts$/, "")]:
+            "./" + file,
+        };
+      })
+      .reduce((acc, curr) => {
+        return { ...acc, ...curr };
+      }, {});
+
+    return entryPoints;
+  }
+
+  const funcs = discoverServerFunctions();
+
+  console.log(`Discovered server functions:
+${Object.entries(funcs)
+  .map(([name, file]) => {
+    return `  - ${name.slice(2)} (from ${file})`;
+  })
+  .join("\n")}
+`);
+
+  return new NodeFederationPlugin(
+    {
+      name: pulseConfig.id + "_server",
+      remoteType: "script",
+      useRuntimePlugin: true,
+      library: { type: "commonjs-module" },
+      filename: "remoteEntry.js",
+      exposes: {
+        ...funcs,
+      },
+    },
+    {}
+  );
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function compileServerFunctions(compiler: any) {
+  // Remove existing entry points
+  try {
+    fs.rmSync("dist/server", { recursive: true, force: true });
+  } catch (e) {
+    console.error("Error removing dist/server:", e);
+    console.log("Continuing...");
+  }
+
+  // Run a new webpack compilation to pick up new server functions
+  const options = {
+    ...compiler.options,
+    watch: false,
+    plugins: [
+      // Add a new NodeFederationPlugin with updated entry points
+      makeNodeFederationPlugin(),
+    ],
+  };
+  const newCompiler = webpack(options);
+
+  // Run the new compiler
+  newCompiler?.run((err, stats) => {
+    if (err) {
+      console.error(`${getServerName()} ❌ Error during recompilation:`, err);
+    } else if (stats?.hasErrors()) {
+      console.error(
+        `${getServerName()} ❌ Compilation errors:`,
+        stats.toJson().errors
+      );
+    } else {
+      console.log(
+        `${getServerName()} ✅ Compiled server functions successfully.`
+      );
+    }
+  });
+}
+// #endregion
+
+// #region Source file parser for Pulse Config plugin
+class PulseConfigPlugin {
+  private requireFS = false;
+
+  apply(compiler: any) {
+    compiler.hooks.beforeCompile.tap("PulseConfigPlugin", () => {
+      this.requireFS = false;
+
+      globSync(["src/**/*.tsx", "src/**/*.ts"]).forEach((file) => {
+        const source = fs.readFileSync(file, "utf8");
+        this.scanSource(source);
+      });
+
+      // Persist result
+      pulseConfig.requireWorkspace = this.requireFS;
+    });
+  }
+
+  private isWorkspaceHook(node: ts.Node): boolean {
+    return (
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      [
+        "useFileSystem",
+        "useFile",
+        "useReceiveFile",
+        "useTerminal",
+        "useWorkspaceInfo",
+      ].includes(node.expression.text)
+    );
+  }
+
+  private scanSource(sourceText: string) {
+    const sourceFile = ts.createSourceFile(
+      "temp.tsx",
+      sourceText,
+      ts.ScriptTarget.Latest,
+      true
+    );
+
+    const visit = (node: ts.Node) => {
+      // Detect: useFileSystem(...)
+      if (this.isWorkspaceHook(node)) {
+        this.requireFS = true;
+      }
+
+      ts.forEachChild(node, visit);
+    };
+
+    visit(sourceFile);
+  }
+}
+
+// #endregion
+
+// #region Webpack Configs
 const previewClientConfig: WebpackConfig & DevServerConfig = {
   entry: {
     main: "./node_modules/.pulse/server/preview/frontend/index.js",
@@ -55,9 +202,9 @@ const previewClientConfig: WebpackConfig & DevServerConfig = {
     extensions: [".ts", ".tsx", ".js"],
   },
   plugins: [
+    new PulseConfigPlugin(),
     new HtmlWebpackPlugin({
-      template:
-        "./node_modules/.pulse/server/preview/frontend/index.html",
+      template: "./node_modules/.pulse/server/preview/frontend/index.html",
     }),
     new MiniCssExtractPlugin({
       filename: "globals.css",
@@ -199,6 +346,7 @@ const mfClientConfig: WebpackConfig & DevServerConfig = {
     extensions: [".ts", ".tsx", ".js"],
   },
   plugins: [
+    new PulseConfigPlugin(),
     new MiniCssExtractPlugin({
       filename: "globals.css",
     }),
@@ -318,92 +466,6 @@ const mfClientConfig: WebpackConfig & DevServerConfig = {
   },
 };
 
-function discoverServerFunctions() {
-  // Get all .ts files under src/server-function and read use default exports as entry points
-  const files = globSync("./src/server-function/**/*.ts");
-  const entryPoints = files
-    .map((file) => file.replaceAll("\\", "/"))
-    .map((file) => {
-      return {
-        ["./" + file.replace("src/server-function/", "").replace(/\.ts$/, "")]:
-          "./" + file,
-      };
-    })
-    .reduce((acc, curr) => {
-      return { ...acc, ...curr };
-    }, {});
-
-  return entryPoints;
-}
-
-function makeNodeFederationPlugin() {
-  const funcs = discoverServerFunctions();
-
-  console.log(`Discovered server functions:
-${Object.entries(funcs)
-  .map(([name, file]) => {
-    return `  - ${name.slice(2)} (from ${file})`;
-  })
-  .join("\n")}
-`);
-
-  return new NodeFederationPlugin(
-    {
-      name: pulseConfig.id + "_server",
-      remoteType: "script",
-      useRuntimePlugin: true,
-      library: { type: "commonjs-module" },
-      filename: "remoteEntry.js",
-      exposes: {
-        ...funcs,
-      },
-    },
-    {}
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function compileServerFunctions(compiler: any) {
-  // Remove existing entry points
-  try {
-    fs.rmSync("dist/server", { recursive: true, force: true });
-  } catch (e) {
-    console.error("Error removing dist/server:", e);
-    console.log("Continuing...");
-  }
-
-  // Run a new webpack compilation to pick up new server functions
-  const options = {
-    ...compiler.options,
-    watch: false,
-    plugins: [
-      // Add a new NodeFederationPlugin with updated entry points
-      makeNodeFederationPlugin(),
-    ],
-  };
-  const newCompiler = webpack(options);
-
-  // Run the new compiler
-  newCompiler?.run((err, stats) => {
-    if (err) {
-      console.error(`${getServerName()} ❌ Error during recompilation:`, err);
-    } else if (stats?.hasErrors()) {
-      console.error(
-        `${getServerName()} ❌ Compilation errors:`,
-        stats.toJson().errors
-      );
-    } else {
-      console.log(
-        `${getServerName()} ✅ Compiled server functions successfully.`
-      );
-    }
-  });
-}
-
-function getServerName() {
-  return process.env.PREVIEW === "true" ? "[server-preview]" : "[server]";
-}
-
 const mfServerConfig: WebpackConfig = {
   name: "server",
   entry: {},
@@ -485,6 +547,7 @@ const mfServerConfig: WebpackConfig = {
     level: "warn",
   },
 };
+// #endregion
 
 const config =
   process.env.PREVIEW === "true"
