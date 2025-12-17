@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./tailwind.css";
-import { useLoading } from "@pulse-editor/react-api";
+import { useFileSystem, useLoading } from "@pulse-editor/react-api";
 
 export default function Main() {
   const [count, setCount] = useState<number>(0);
   const { isReady, toggleLoading } = useLoading();
   const [inputValue, setInputValue] = useState<string>("");
   const [apiResult, setApiResult] = useState<string>("");
+  useFileSystem();
 
   useEffect(() => {
     if (isReady) {
@@ -19,7 +20,7 @@ export default function Main() {
       <div className="flex items-center gap-x-1">
         GitHub:
         <button
-          className="w-8 h-8 border-1 border-gray-300 rounded-full p-1 hover:bg-gray-100"
+          className="w-8 h-8 border border-gray-300 rounded-full p-1 hover:bg-gray-100"
           onClick={() => {
             window.open(
               "https://github.com/claypulse/pulse-app-template",

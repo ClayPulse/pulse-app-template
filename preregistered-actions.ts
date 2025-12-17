@@ -1,4 +1,4 @@
-import { Action } from "@pulse-editor/shared-utils";
+import type { Action } from "@pulse-editor/shared-utils";
 
 export const preRegisteredActions: Record<string, Action> = {
   "example-action": {
