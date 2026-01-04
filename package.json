@@ -18,8 +18,8 @@
   "dependencies": {
     "@module-federation/enhanced": "0.21.6",
     "@module-federation/runtime": "0.21.6",
-    "@pulse-editor/react-api": "^0.1.1-beta.67",
-    "@pulse-editor/shared-utils": "^0.1.1-beta.67",
+    "@pulse-editor/react-api": "^0.1.1-beta.68",
+    "@pulse-editor/shared-utils": "^0.1.1-beta.68",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "react": "19.2.3",
