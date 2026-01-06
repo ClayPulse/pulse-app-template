@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./tailwind.css";
-import { useFileSystem, useLoading } from "@pulse-editor/react-api";
+import { useLoading } from "@pulse-editor/react-api";
 
 export default function Main() {
   const [count, setCount] = useState<number>(0);
   const { isReady, toggleLoading } = useLoading();
   const [inputValue, setInputValue] = useState<string>("");
   const [apiResult, setApiResult] = useState<string>("");
-  useFileSystem();
 
   useEffect(() => {
     if (isReady) {
