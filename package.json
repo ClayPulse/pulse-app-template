@@ -18,15 +18,15 @@
   "dependencies": {
     "@module-federation/enhanced": "0.21.6",
     "@module-federation/runtime": "0.21.6",
-    "@pulse-editor/react-api": "^0.1.1-beta.69",
-    "@pulse-editor/shared-utils": "^0.1.1-beta.69",
+    "@pulse-editor/react-api": "^0.1.1-beta.70",
+    "@pulse-editor/shared-utils": "^0.1.1-beta.70",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
-    "@pulse-editor/cli": "^0.1.1-beta.29",
+    "@pulse-editor/cli": "^0.1.1-beta.31",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/cors": "^2.8.19",
     "@types/react": "19.2.7",
