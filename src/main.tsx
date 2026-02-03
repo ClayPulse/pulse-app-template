@@ -15,7 +15,7 @@ export default function Main() {
   }, [isReady, toggleLoading]);
 
   return (
-    <div className="p-2 flex flex-col">
+    <div className="p-2 flex flex-col w-full h-full overflow-auto">
       <div className="flex items-center gap-x-1">
         GitHub:
         <button
@@ -23,7 +23,7 @@ export default function Main() {
           onClick={() => {
             window.open(
               "https://github.com/claypulse/pulse-app-template",
-              "_blank"
+              "_blank",
             );
           }}
         >
