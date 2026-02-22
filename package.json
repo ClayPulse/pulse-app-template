@@ -16,31 +16,31 @@
     "clean": "pulse clean"
   },
   "dependencies": {
-    "@module-federation/enhanced": "0.21.6",
-    "@module-federation/runtime": "0.21.6",
-    "@pulse-editor/react-api": "^0.1.1-beta.70",
-    "@pulse-editor/shared-utils": "^0.1.1-beta.70",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "@module-federation/enhanced": "2.0.1",
+    "@module-federation/runtime": "2.0.1",
+    "@pulse-editor/react-api": "^0.1.1-beta.74",
+    "@pulse-editor/shared-utils": "^0.1.1-beta.74",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@pulse-editor/cli": "^0.1.1-beta.31",
-    "@tailwindcss/postcss": "^4.1.18",
+    "@pulse-editor/cli": "^0.1.1-beta.33",
+    "@tailwindcss/postcss": "^4.2.0",
     "@types/cors": "^2.8.19",
-    "@types/react": "19.2.7",
+    "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "css-loader": "^7.1.2",
+    "css-loader": "^7.1.4",
     "eslint": "^9.39.2",
     "eslint-plugin-react": "^7.37.5",
     "postcss": "^8.5.6",
-    "postcss-loader": "^8.2.0",
+    "postcss-loader": "^8.2.1",
     "style-loader": "^4.0.0",
-    "tailwindcss": "^4.1.18",
+    "tailwindcss": "^4.2.0",
     "ts-loader": "^9.5.4",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.50.0"
+    "typescript-eslint": "^8.56.0"
   }
 }
