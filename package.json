@@ -16,17 +16,15 @@
     "clean": "pulse clean"
   },
   "dependencies": {
-    "@module-federation/enhanced": "2.0.1",
-    "@module-federation/runtime": "2.0.1",
-    "@pulse-editor/react-api": "^0.1.1-beta.74",
-    "@pulse-editor/shared-utils": "^0.1.1-beta.74",
+    "@pulse-editor/react-api": "^0.1.1-beta.76",
+    "@pulse-editor/shared-utils": "^0.1.1-beta.76",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@pulse-editor/cli": "^0.1.1-beta.33",
+    "@pulse-editor/cli": "^0.1.1-beta.35",
     "@tailwindcss/postcss": "^4.2.0",
     "@types/cors": "^2.8.19",
     "@types/react": "19.2.14",

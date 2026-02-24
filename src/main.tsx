@@ -1,18 +1,34 @@
 import React, { useEffect, useState } from "react";
 import "./tailwind.css";
-import { useLoading } from "@pulse-editor/react-api";
+import { useLoading, useRegisterAction } from "@pulse-editor/react-api";
 
 export default function Main() {
   const [count, setCount] = useState<number>(0);
   const { isReady, toggleLoading } = useLoading();
   const [inputValue, setInputValue] = useState<string>("");
   const [apiResult, setApiResult] = useState<string>("");
+  const [actionResult, setActionResult] = useState<string>("");
 
   useEffect(() => {
     if (isReady) {
       toggleLoading(false);
     }
   }, [isReady, toggleLoading]);
+
+  const { runAppAction } = useRegisterAction(
+    {
+      actionName: "exampleAction",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      beforeAction: async (args: any) => {
+        console.log("Before action, args:", args);
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      afterAction: async (args: any, result: any) => {
+        console.log("After action, args:", args, "result:", result);
+      },
+    },
+    [],
+  );
 
   return (
     <div className="p-2 flex flex-col w-full h-full overflow-auto">
@@ -71,6 +87,22 @@ export default function Main() {
         </button>
         <p className="text-blue-400">{apiResult}</p>
       </div>
+
+      <button
+        className="pt-2 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-sm"
+        onClick={async () => {
+          if (runAppAction) {
+            const result = await runAppAction({
+              arg1: "test",
+              arg2: 2,
+            });
+            setActionResult(JSON.stringify(result));
+          }
+        }}
+      >
+        Run exampleAction
+      </button>
+      {actionResult && <p className="text-blue-400">{actionResult}</p>}
     </div>
   );
 }

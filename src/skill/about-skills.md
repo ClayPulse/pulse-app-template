@@ -1,0 +1,2 @@
+# Pulse App Skills
+`src/skills` contains agentic skills that can be used by AI agents. In addition to Anthropic's Skill format, Pulse App adds **App Action** that you can write in a skill folder. **App Action** exposes functions to both Pulse App frontend and backend. You can use App Actions to implement features that requires UI interaction in Pulse Editor canvas workspace or backend logic on Pulse Editor automation platform.
