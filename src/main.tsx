@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./tailwind.css";
-import { useLoading, useRegisterAction } from "@pulse-editor/react-api";
+import { useLoading, useActionEffect } from "@pulse-editor/react-api";
 
 export default function Main() {
   const [count, setCount] = useState<number>(0);
@@ -15,7 +15,7 @@ export default function Main() {
     }
   }, [isReady, toggleLoading]);
 
-  const { runAppAction } = useRegisterAction(
+  const { runAppAction } = useActionEffect(
     {
       actionName: "exampleAction",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
