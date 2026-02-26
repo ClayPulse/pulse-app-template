@@ -45,7 +45,81 @@ Server functions are backend HTTP handlers that can be called from the frontend 
 A skill folder under `src/skill/` pairs a `SKILL.md` (Anthropic skill format with YAML frontmatter) with an `action.ts` default export. App Actions are exposed and callable from three places:
 
 1. **AI agents** — Pulse Editor agents can invoke the skill directly.
-2. **Frontend** — via `runAppAction` from `useActionEffect` in any React component.
-3. **Backend** — server-side logic on the Pulse Editor automation platform at https://pulse-editor.com/api/skill/{appId}/{version}/{skillName}. For example, the `example-skill` in this repo can be called at `https://pulse-editor.com/api/skill/pulse_app_template/0.0.1/exampleSkill`.
+2. **Frontend** — via `runAppAction` returned from `useActionEffect` in any React component. To display and produce UI results in the Pulse Editor workflow canvas view, it is recommended to use useActionEffect to perform UI updates before and after the action execution. Generally speaking, useActionEffect should handle similar UI logics as if the action is invoked from the frontend. For example, normally a user might interact with a button to trigger an action; useActionEffect allows an AI agent to trigger the same action without directly interacting with the button, but the UI needs to update accordingly as if the button is clicked with `beforeAction` and `afterAction`.
+3. **Backend** — via the Pulse Editor automation platform at `https://pulse-editor.com/api/skill/{appId}/{version}/{skillName}`. For example, the `example-skill` in this repo is accessible at `https://pulse-editor.com/api/skill/pulse_app_template/0.0.1/exampleSkill`.
 
 This makes App Actions the primary integration point for features that need UI interaction in the canvas workspace or automated backend execution.
+
+
+**Skill**
+Skill definition is based on Anthropic's SKILL format with YAML frontmatter. 
+
+**App Action**
+The `action.ts` file in each skill folder defines the App Action associated with the skill.
+It has the following requirements:
+- must define a default export function that takes an input object and returns an output object. 
+- can define any input/output types as an object, as needed for the skill's functionality.
+- must use JSDoc comments to document the input parameters and output with @typedef and @property annotations.
+- must use JSDoc comments to document the function with a description and @param and @returns annotations.
+
+Exqample `action.ts` structure:
+```ts
+/**
+ * @typedef {Object} Input - The input parameters for the example action.
+ * @property {string} arg1 - The first argument for the example action.
+ * @property {number} arg2 - The second argument for the example action (optional).
+ */
+type Input = {
+  arg1: string;
+  arg2?: number;
+};
+
+/**
+ * @typedef {Object} Output - The output of the example action.
+ * @property {string} result1 - The first result of the example action.
+ * @property {string} result2 - The second result of the example action.
+ */
+type Output = {
+  result1: string;
+  result2: string;
+};
+
+/**
+ * This is an example action function. You can replace this with your own action logic.
+ *
+ * @param {Input} input - The input parameters for the example action.
+ *
+ * @returns {Output} The output of the example action.
+ */
+export default function exampleSkill({ arg1, arg2 = 1 }: Input): Output {
+  return {
+    result1: `Received arg1: ${arg1}`,
+    result2: `Received arg2: ${arg2}`,
+  };
+}
+```
+
+
+**useActionEffect**
+Think of `useActionEffect` as a way to "link" an App Action to the frontend UI. It will have `beforeAction` and `afterAction` functions that pipe the action's input and output, allowing you to perform UI updates accordingly. Note that `beforeAction` and `afterAction` functionally behave like pipelines that process the args and optionally transform them before passing. 
+They can also make side effects in the UI via React such as showing loading states, updating components, etc.
+
+Example usage of `useActionEffect` in `main.tsx`:
+```tsx
+  const { runAppAction } = useActionEffect(
+    {
+      actionName: "exampleAction",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      beforeAction: async (args: any) => {
+        console.log("Before action, action's args:", args);
+        return args;
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      afterAction: async (result: any) => {
+        console.log("After action, action's result:", result);
+        return result;
+      },
+    },
+    [],
+  );
+```

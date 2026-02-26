@@ -16,8 +16,8 @@
     "clean": "pulse clean"
   },
   "dependencies": {
-    "@pulse-editor/react-api": "^0.1.1-beta.77",
-    "@pulse-editor/shared-utils": "^0.1.1-beta.77",
+    "@pulse-editor/react-api": "^0.1.1-beta.80",
+    "@pulse-editor/shared-utils": "^0.1.1-beta.80",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "react": "19.2.4",

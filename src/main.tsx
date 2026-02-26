@@ -20,11 +20,13 @@ export default function Main() {
       actionName: "exampleAction",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       beforeAction: async (args: any) => {
-        console.log("Before action, args:", args);
+        console.log("Before action, action's args:", args);
+        return args;
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      afterAction: async (args: any, result: any) => {
-        console.log("After action, args:", args, "result:", result);
+      afterAction: async (result: any) => {
+        console.log("After action, action's result:", result);
+        return result;
       },
     },
     [],
