@@ -25,7 +25,7 @@ type Output = {
  *
  * @returns {Output} The output of the example action.
  */
-export default function exampleAction({ arg1, arg2 = 1 }: Input): Output {
+export default function exampleSkill({ arg1, arg2 = 1 }: Input): Output {
   return {
     result1: `Received arg1: ${arg1}`,
     result2: `Received arg2: ${arg2}`,
