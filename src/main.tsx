@@ -17,7 +17,7 @@ export default function Main() {
 
   const { runAppAction } = useActionEffect(
     {
-      actionName: "exampleAction",
+      actionName: "exampleSkill",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       beforeAction: async (args: any) => {
         console.log("Before action, action's args:", args);
@@ -33,7 +33,7 @@ export default function Main() {
   );
 
   return (
-    <div className="p-2 flex flex-col w-full h-full overflow-auto">
+    <div className="p-2 flex flex-col w-full h-full overflow-auto gap-y-1">
       <div className="flex items-center gap-x-1">
         GitHub:
         <button
@@ -102,7 +102,7 @@ export default function Main() {
           }
         }}
       >
-        Run exampleAction
+        Run exampleSkill
       </button>
       {actionResult && <p className="text-blue-400">{actionResult}</p>}
     </div>

@@ -108,7 +108,7 @@ Example usage of `useActionEffect` in `main.tsx`:
 ```tsx
   const { runAppAction } = useActionEffect(
     {
-      actionName: "exampleAction",
+      actionName: "exampleSkill",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       beforeAction: async (args: any) => {
         console.log("Before action, action's args:", args);

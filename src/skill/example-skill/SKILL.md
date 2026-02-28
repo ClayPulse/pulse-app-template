@@ -8,4 +8,4 @@ This skill is a simple example that demonstrates how to create a skill using the
 
 
 ## What this skill does
-This skill defines an App Action called `exampleAction` that takes two arguments: `arg1` (a string) and `arg2` (a number, optional). The action returns an object containing two results: `result1` and `result2`, which are strings that echo the input arguments.
+This skill defines an App Action called `exampleSkill` that takes two arguments: `arg1` (a string) and `arg2` (a number, optional). The action returns an object containing two results: `result1` and `result2`, which are strings that echo the input arguments.
