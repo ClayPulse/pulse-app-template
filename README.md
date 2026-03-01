@@ -67,7 +67,7 @@ App Actions are callable from three places:
 
 1. **AI agents** — Pulse Editor agents can invoke the skill directly.
 2. **Frontend** — via `runAppAction` returned from `useActionEffect` in any React component. To display and produce UI results in the Pulse Editor workflow canvas view, it is recommended to use useActionEffect to perform UI updates before and after the action execution. Generally speaking, useActionEffect should handle similar UI logics as if the action is invoked from the frontend. For example, normally a user might interact with a button to trigger an action; useActionEffect allows an AI agent to trigger the same action without directly interacting with the button, but the UI needs to update accordingly as if the button is clicked with `beforeAction` and `afterAction`.
-3. **Backend** — via the Pulse Editor automation platform at `https://pulse-editor.com/api/skill/{appId}/{version}/{skillName}`. For example, the `example-skill` in this repo is accessible at `https://pulse-editor.com/api/skill/pulse_app_template/0.0.1/exampleSkill`.
+3. **Backend** — via the Pulse Editor automation platform at `https://pulse-editor.com/api/skill/{appId}/{version}/{skillName}`. For example, the `example-skill` in this repo is accessible at `https://pulse-editor.com/api/skill/pulse_app_template/0.0.1/example-skill`.
 
 
 **Create Agent Skill Action with CLI**
@@ -116,7 +116,7 @@ Example `action.ts` structure:
 /**
  * @typedef {Object} Input - The input parameters for the example action.
  * @property {string} arg1 - The first argument for the example action.
- * @property {number} arg2 - The second argument for the example action (optional).
+ * @property {number} [arg2] - The second argument for the example action (optional).
  */
 type Input = {
   arg1: string;

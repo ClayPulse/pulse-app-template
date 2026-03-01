@@ -1,7 +1,7 @@
 /**
  * @typedef {Object} Input - The input parameters for the example action.
  * @property {string} arg1 - The first argument for the example action.
- * @property {number} arg2 - The second argument for the example action (optional).
+ * @property {number} [arg2] - The second argument for the example action (optional).
  */
 type Input = {
   arg1: string;
