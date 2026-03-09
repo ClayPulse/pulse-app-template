@@ -100,27 +100,46 @@ export default function exampleSkill({ arg1, arg2 = 1 }: Input): Output {
 }
 ```
 
-
 **useActionEffect**
-Think of `useActionEffect` as a way to "link" an App Action to the frontend UI. It will have `beforeAction` and `afterAction` functions that pipe the action's input and output, allowing you to perform UI updates accordingly. Note that `beforeAction` and `afterAction` functionally behave like pipelines that process the args and optionally transform them before passing. 
+Think of `useActionEffect` as a way to "link" an App Action to the frontend UI. It will have `beforeAction` and `afterAction` functions that pipe the action's input and output, allowing you to perform UI updates accordingly. Note that `beforeAction` and `afterAction` functionally behave like pipelines that process the args and optionally transform them before passing.
 They can also make side effects in the UI via React such as showing loading states, updating components, etc.
+It returns a `runAppAction` function that can be used to invoke the action from the frontend. 
+
+Trigger logic:
+- When the action is triggered from an AI agent in Pulse Editor, both `beforeAction` and `afterAction` will run.
+- When the action is triggered from workflow runner in Pulse Editor, both `beforeAction` and `afterAction` will run.
+- When the action is triggered directly by calling `runAppAction` from the frontend, neither `beforeAction` nor `afterAction` will run. This is because `runAppAction` is meant to be a direct invocation of the action logic without any additional processing. If you want to have similar UI updates as if the action is triggered from the frontend, you can manually add the same logic in the frontend before and after calling `runAppAction`.
 
 Example usage of `useActionEffect` in `main.tsx`:
+
 ```tsx
-  const { runAppAction } = useActionEffect(
-    {
-      actionName: "exampleSkill",
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      beforeAction: async (args: any) => {
-        console.log("Before action, action's args:", args);
-        return args;
-      },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      afterAction: async (result: any) => {
-        console.log("After action, action's result:", result);
-        return result;
-      },
+// This hook registers the exampleSkill action and allows workflow automation to
+// trigger the action in the frontend with beforeAction and afterAction to handle 
+// UI updates accordingly.
+const { runAppAction } = useActionEffect(
+  {
+    actionName: "exampleSkill",
+    // This will run only when the action is triggered via workflow runner in Pulse Editor.
+    beforeAction: async (args: any) => {
+      console.log("Before action, action's args:", args);
+      return args;
     },
-    [],
-  );
+    // This will run only when the action is triggered via workflow runner in Pulse Editor.
+    afterAction: async (result: any) => {
+      console.log("After action, action's result:", result);
+      return result;
+    },
+  },
+  [],
+);
+
+// Since runAppAction will not trigger beforeAction and afterAction when invoked directly from frontend,
+// you need to manually apply logics
+async function handleClick() {
+  // Add any logic before invoking the action, e.g. validating user input, showing loading states, etc.
+  console.log("Invoking exampleSkill action from the frontend with args...");
+  await runAppAction({ arg1: "Hello", arg2: 42 });
+  // Add any logic after invoking the action, e.g. showing success messages, updating the UI, etc.
+  console.log("Finished invoking exampleSkill action from the frontend");
+}
 ```
