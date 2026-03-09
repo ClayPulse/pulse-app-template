@@ -110,6 +110,8 @@ It has the following requirements:
 - can define any input/output types as an object, as needed for the skill's functionality.
 - must use JSDoc comments to document the input parameters and output with @typedef and @property annotations.
 - must use JSDoc comments to document the function with a description and @param and @returns annotations.
+- do not use environment specific APIs (e.g. browser-only or Node.js-only) in the action function: for backend-specific logic, use server functions and fetch from action.ts; for frontend-specific logic, use React components and hooks in the UI and call the action via `runAppAction`.
+
 
 Example `action.ts` structure:
 ```ts
