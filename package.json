@@ -16,15 +16,15 @@
     "clean": "pulse clean"
   },
   "dependencies": {
-    "@pulse-editor/react-api": "^0.1.1-beta.83",
-    "@pulse-editor/shared-utils": "^0.1.1-beta.83",
+    "@pulse-editor/react-api": "^0.1.1-beta.84",
+    "@pulse-editor/shared-utils": "^0.1.1-beta.84",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@pulse-editor/cli": "^0.1.8",
+    "@pulse-editor/cli": "^0.1.9",
     "@tailwindcss/postcss": "^4.2.0",
     "@types/cors": "^2.8.19",
     "@types/react": "19.2.14",
