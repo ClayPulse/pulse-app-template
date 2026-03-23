@@ -89,7 +89,7 @@ Provides shared utilities such as types used across your extension.
 
 Provides React hooks for interacting with Pulse Editor's frontend environment:
 
-- **`useLoading()`** — Controls the loading state shown by Pulse Editor while the app initializes.
+- **`useLoading()`** — Controls the loading state shown by Pulse Editor while the app initializes --this is not meant for Pulse App's internal loading states, but rather to notify Pulse Editor if the app as a whole is ready to be interacted with. For internal loading states, use your own React state management.
 - **`useActionEffect(config, deps)`** — Registers an App Action handler. The `actionName` must match the skill's `action.ts` filename convention. Returns `runAppAction` for invoking the action from the UI.
 - and more...
 
