@@ -20,11 +20,17 @@ export default function Main() {
       actionName: "example-skill",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       beforeAction: async (args: any) => {
+        // Return if args is empty when not loaded in Pulse Editor
+        if (!args) return;
+
         console.log("Before action, action's args:", args);
         return args;
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       afterAction: async (result: any) => {
+        // Return if result is empty when not loaded in Pulse Editor
+        if (!result) return;
+
         console.log("After action, action's result:", result);
         return result;
       },
