@@ -24,7 +24,7 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@pulse-editor/cli": "^0.1.28",
+    "@pulse-editor/cli": "^0.1.29",
     "@tailwindcss/postcss": "^4.2.0",
     "@types/cors": "^2.8.19",
     "@types/react": "19.2.14",
